@@ -1,7 +1,7 @@
 
 picture_lib: Main.o Utils.o Colour.o Picture.o PicLibrary.o
 	g++ `pkg-config --cflags opencv` Main.o Utils.o Colour.o Picture.o PicLibrary.o `pkg-config --libs opencv` -o picture_lib -lpthread
-	
+
 Utils.o: Utils.hpp Utils.cpp
 
 Colour.o: Colour.hpp Colour.cpp

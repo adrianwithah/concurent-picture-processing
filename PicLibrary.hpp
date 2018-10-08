@@ -4,10 +4,12 @@
 #include "Picture.hpp"
 #include "Utils.hpp"
 
+using namespace std;
+
 class PicLibrary {
 
   private:
-  // TODO: define internal picture storage 
+    map<string, Picture> picStore;
 
   public:
   // defaiult constructor/deconstructor
@@ -20,7 +22,7 @@ class PicLibrary {
   void unloadpicture(string filename);
   void savepicture(string filename, string path);
   void display(string filename);
-  
+
   // picture transformation routines
   void invert(string filename);
   void grayscale(string filename);
@@ -30,4 +32,3 @@ class PicLibrary {
 };
 
 #endif
-
