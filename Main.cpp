@@ -31,6 +31,7 @@ int main(int argc, char ** argv)
 
     string command;
     getline (cin, command);
+    cout << "Input: " << command << endl;
 
     if (cin.eof()) {
       cout << "EOF detected." << endl;
