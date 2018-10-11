@@ -32,13 +32,21 @@ int main(int argc, char ** argv)
     string command;
     getline (cin, command);
 
-    cout << command << endl;
+    if (cin.eof()) {
+      cout << "EOF detected." << endl;
+      break;
+    }
 
     vector<string> tokens;
     stringstream stream(command);
     string intermediate;
     while (getline(stream, intermediate, ' ')) {
       tokens.push_back(intermediate);
+    }
+
+    if (tokens.size() == 0) {
+      cout << "Unrecognised command.. Please try again." << endl;
+      continue;
     }
 
     if (tokens[0] == "liststore") {
