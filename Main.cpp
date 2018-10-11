@@ -13,11 +13,16 @@ using namespace std;
 
 int main(int argc, char ** argv)
 {
-  // image files can be passed here. Will need to parse and pre-load them into the
-  // PicLibrary class store, using the file's base name as key.
-
   Utils utils;
   PicLibrary picLib;
+
+  int num_preloads = argc - 1;
+  if (num_preloads > 0) {
+    for (int i = 0; i < num_preloads; i++) {
+      string path = string(argv[1 + i]);
+      picLib.loadpicture(path, path.substr(path.find_last_of("/") + 1));
+    }
+  }
 
   // write main IO loop that runs the command-line interpreter interactive shell
   while (true) {
@@ -34,9 +39,6 @@ int main(int argc, char ** argv)
     while (getline(stream, intermediate, ' ')) {
       tokens.push_back(intermediate);
     }
-
-    // for(int i = 0; i < tokens.size(); i++)
-    //     cout << tokens[i] << '\n';
 
     if (tokens[0] == "liststore") {
 
