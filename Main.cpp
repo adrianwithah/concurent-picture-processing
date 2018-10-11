@@ -31,6 +31,7 @@ int main(int argc, char ** argv)
 
     string command;
     getline (cin, command);
+
     cout << command << endl;
 
     vector<string> tokens;

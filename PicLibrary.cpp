@@ -75,7 +75,6 @@ void PicLibrary::invert(string filename) {
     for (int y = 0; y < height; y++) {
       Colour old_pixel = pic.getpixel(x, y);
       Colour new_pixel = Colour(255 - old_pixel.getblue(), 255 - old_pixel.getgreen(), 255 - old_pixel.getred());
-      cout << old_pixel.getblue() << " " << new_pixel.getblue() << endl;
       pic.setpixel(x, y, new_pixel);
     }
   }
@@ -244,7 +243,7 @@ void PicLibrary::blur(string filename) {
       new_pic.setpixel(origWidth - 1, y, pic.getpixel(origWidth - 1, y));
     }
   }
-  
+
   it->second = new_pic;
   cout << "Blured " << filename << " successfully." << endl;
 }
