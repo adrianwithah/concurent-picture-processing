@@ -74,7 +74,7 @@ void PicLibrary::invert(string filename) {
   for (int x = 0; x < width; x++) {
     for (int y = 0; y < height; y++) {
       Colour old_pixel = pic.getpixel(x, y);
-      Colour new_pixel = Colour(255 - old_pixel.getblue(), 255 - old_pixel.getgreen(), 255 - old_pixel.getred());
+      Colour new_pixel = Colour(255 - old_pixel.getred(), 255 - old_pixel.getgreen(), 255 - old_pixel.getblue());
       pic.setpixel(x, y, new_pixel);
     }
   }
