@@ -4,7 +4,7 @@
 Utils::Utils(){}
 
 Mat Utils::createimage(int width, int height)
-{   
+{
     Mat img;
     try {
         cout <<"creating colour image" << endl;
@@ -14,7 +14,7 @@ Mat Utils::createimage(int width, int height)
         img.release();
     }
     return img;
-}   
+}
 
 Mat Utils::copyimage(Mat img)
 {
@@ -24,10 +24,10 @@ Mat Utils::copyimage(Mat img)
 bool Utils::saveimage(Mat img, string filename)
 {
     vector<int> compression_params;
-    
+
     compression_params.push_back(CV_IMWRITE_JPEG_QUALITY);
     compression_params.push_back(95); //default value in opencv
-    
+
     try{
         imwrite(filename, img, compression_params);
     }catch (runtime_error& ex) {
@@ -45,7 +45,7 @@ Mat Utils::loadimage(string path)
         if(!img.data){
             cout <<"Could not load the image" << endl;
         }
-    }catch (runtime_error& ex) {        
+    }catch (runtime_error& ex) {
         fprintf(stderr, " %s\n", ex.what());
         img.release();
     }
@@ -59,4 +59,3 @@ void Utils::displayimage(Mat img)
     waitKey(0);
     destroyWindow("Picture processing");
 }
-

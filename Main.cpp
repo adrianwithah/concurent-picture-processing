@@ -6,10 +6,9 @@
 #include "Utils.hpp"
 #include "Picture.hpp"
 #include "PicLibrary.hpp"
+#include "Command.hpp"
 
 using namespace std;
-
-// TODO: Implement the picture library command-line interpreter
 
 int main(int argc, char ** argv)
 {
@@ -31,7 +30,6 @@ int main(int argc, char ** argv)
 
     string command;
     getline (cin, command);
-    cout << "Input: " << command << endl;
 
     if (cin.eof()) {
       cout << "EOF detected." << endl;
@@ -45,109 +43,9 @@ int main(int argc, char ** argv)
       tokens.push_back(intermediate);
     }
 
-    if (tokens.size() == 0) {
-      cout << "Unrecognised command.. Please try again." << endl;
-      continue;
-    }
-
-    if (tokens[0] == "liststore") {
-
-      picLib.print_picturestore();
-
-    } else if (tokens[0] == "load") {
-
-      if (tokens.size() != 3) {
-        cout << "Load usage: load <file_path> <file_name>." << endl;
-        continue;
-      }
-
-      picLib.loadpicture(tokens[1], tokens[2]);
-
-    } else if (tokens[0] == "unload") {
-
-      if (tokens.size() != 2) {
-        cout << "Unload usage: unload <file_name>." << endl;
-        continue;
-      }
-
-      picLib.unloadpicture(tokens[1]);
-
-    }  else if (tokens[0] == "save") {
-
-      if (tokens.size() != 3) {
-        cout << "Save usage: save <file_name> <file_path>." << endl;
-        continue;
-      }
-
-      picLib.savepicture(tokens[1], tokens[2]);
-
-    }  else if (tokens[0] == "exit") {
-
-      // free stuff here.
-      return 0;
-
-    }  else if (tokens[0] == "display") {
-
-      if (tokens.size() != 2) {
-        cout << "Display usage: display <file_name>." << endl;
-        continue;
-      }
-
-      picLib.display(tokens[1]);
-
-    }  else if (tokens[0] == "invert") {
-
-      if (tokens.size() != 2) {
-        cout << "Invert usage: invert <file_name>." << endl;
-        continue;
-      }
-
-      picLib.invert(tokens[1]);
-
-    }  else if (tokens[0] == "grayscale") {
-
-      if (tokens.size() != 2) {
-        cout << "Grayscale usage: grayscale <file_name>." << endl;
-        continue;
-      }
-
-      picLib.grayscale(tokens[1]);
-
-    }  else if (tokens[0] == "rotate") {
-
-      int rotateBy = stoi(tokens[1]);
-      if (tokens.size() != 3 || rotateBy != 90 && rotateBy != 180 && rotateBy != 270) {
-        cout << "Rotate usage: rotate [90|180|270] <file_name>." << endl;
-        continue;
-      }
-
-      picLib.rotate(rotateBy, tokens[2]);
-
-    }  else if (tokens[0] == "flip") {
-
-      if (tokens.size() != 3 || tokens[1] != "H" && tokens[1] != "V") {
-        cout << "Flip usage: flip [H|V] <file_name>." << endl;
-        continue;
-      }
-
-      picLib.flipVH(tokens[1][0], tokens[2]);
-
-    }  else if (tokens[0] == "blur") {
-
-      if (tokens.size() != 2) {
-        cout << "Blur usage: blur <file_name>." << endl;
-        continue;
-      }
-
-      picLib.blur(tokens[1]);
-
-    }  else {
-      cout << "Unrecognised command.. Please try again." << endl;
-      continue;
-    }
-
+    Command cmd(&tokens, &picLib);
+    cmd.execute();
   }
 
   return 0;
-
 }

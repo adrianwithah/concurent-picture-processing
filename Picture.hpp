@@ -15,14 +15,14 @@ class Picture {
     Utils imgio;
 
   public:
-      
+
   enum RGB {BLUE, GREEN, RED};
- 
+
   // class constructor, loads an image from a provided file
   Picture(string path);
 
-  // class constructor, creates an image provided the size 
-  Picture(int width, int height);  
+  // class constructor, creates an image provided the size
+  Picture(int width, int height);
 
   // default constructor/deconstructor
   Picture();
@@ -43,10 +43,10 @@ class Picture {
 
   // provides the image of the class
   Mat getimage();
-  
+
   // overwrite Picture image with another image
   void setimage(Mat cpyimg);
-  
+
  };
 
 #endif

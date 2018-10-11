@@ -31,7 +31,7 @@ Colour Picture::getpixel(int x, int y){
 
 void Picture::setpixel(int x, int y, Colour rgb){
     // Beware: opencv pixels are stored in a (y,x) vector, not an (x,y) vector!
-    img.at<cv::Vec3b>(y,x)[BLUE] = rgb.getblue(); 
+    img.at<cv::Vec3b>(y,x)[BLUE] = rgb.getblue();
     img.at<cv::Vec3b>(y,x)[GREEN] = rgb.getgreen();
     img.at<cv::Vec3b>(y,x)[RED] = rgb.getred();
 }
@@ -47,4 +47,3 @@ Mat Picture::getimage(){
 void Picture::setimage(Mat cpyimg){
     img = imgio.copyimage(cpyimg);
 }
-

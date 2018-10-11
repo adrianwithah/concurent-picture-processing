@@ -1,6 +1,6 @@
 
-picture_lib: Main.o Utils.o Colour.o Picture.o PicLibrary.o
-	g++ `pkg-config --cflags opencv` Main.o Utils.o Colour.o Picture.o PicLibrary.o `pkg-config --libs opencv` -o picture_lib -lpthread
+picture_lib: Main.o Utils.o Colour.o Picture.o PicLibrary.o Command.o
+	g++ `pkg-config --cflags opencv` Main.o Utils.o Colour.o Picture.o PicLibrary.o Command.o `pkg-config --libs opencv` -o picture_lib -lpthread
 
 Utils.o: Utils.hpp Utils.cpp
 
@@ -10,7 +10,9 @@ Picture.o: Utils.hpp Picture.hpp Picture.cpp
 
 PicLibrary.o: Utils.hpp PicLibrary.hpp PicLibrary.cpp
 
-Main.o: Main.cpp Utils.hpp Colour.hpp Picture.hpp PicLibrary.hpp
+Main.o: Main.cpp Utils.hpp Colour.hpp Picture.hpp PicLibrary.hpp Command.hpp
+
+Command.o: Command.cpp
 
 %.o: %.cpp
 	g++ -std=c++11 -c $< -lpthread
