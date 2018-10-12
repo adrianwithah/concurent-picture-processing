@@ -66,33 +66,36 @@ void Command::parse_arguments() {
 string Command::get_filename() {
   switch (instr) {
     case LISTSTORE:
-      break;
+      return "";
     case LOAD:
-      break;
+      return (*args)[2];
     case UNLOAD:
-      break;
+      return (*args)[1];
     case SAVE:
-      break;
+      return (*args)[1];
     case EXIT:
-      break;
+      return "";
     case DISPLAY:
-      break;
+      return (*args)[1];
     case INVERT:
-      break;
+      return (*args)[1];
     case GRAYSCALE:
-      break;
+      return (*args)[1];
     case ROTATE:
-      break;
+      return (*args)[2];;
     case FLIP:
-      break;
+      return (*args)[2];;
     case BLUR:
-      break;
+      return (*args)[1];
     case UNRECOGNISED:
-      break;
+      return "";
   }
 }
 
 void Command::execute() {
+
+  cout << "Executing command!" << endl;
+
   switch (instr) {
     case LISTSTORE:
       (*picLib).print_picturestore();
@@ -103,6 +106,7 @@ void Command::execute() {
         return;
       }
 
+      cout << "Entered load switch case!" << endl;
       (*picLib).loadpicture((*args)[1], (*args)[2]);
 
       // create PicThread and add to list.

@@ -10,6 +10,8 @@ void PicLibrary::print_picturestore() {
 }
 
 void PicLibrary::loadpicture(string path, string filename) {
+  cout << "Executing load picture command!" << endl;
+
   Picture pic(path);
 
   if (pic.getimage().empty()) {

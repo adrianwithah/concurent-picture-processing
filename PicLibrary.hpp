@@ -16,6 +16,10 @@ class PicLibrary {
   PicLibrary(){};
   ~PicLibrary(){};
 
+  //lock routines
+  bool lock();
+  void unlock();
+
   // command-line interpreter routines
   void print_picturestore();
   void loadpicture(string path, string filename);

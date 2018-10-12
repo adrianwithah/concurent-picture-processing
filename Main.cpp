@@ -7,19 +7,27 @@
 #include "Picture.hpp"
 #include "PicLibrary.hpp"
 #include "Command.hpp"
+#include "PicThread.hpp"
 
 using namespace std;
 
+const string EMPTY_STRING = "";
+const string MISC_THREAD_NAME = "MISCELLANEOUS_THREAD";
+
 int main(int argc, char ** argv)
 {
-  Utils utils;
-  PicLibrary picLib;
+  PicLibrary *picLib = new PicLibrary();
+
+  map<string, PicThread*> filename_to_threads;
+  PicThread *misc_thread = new PicThread();
+  filename_to_threads.insert(pair<string, PicThread*>(MISC_THREAD_NAME, misc_thread));
+  misc_thread->run();
 
   int num_preloads = argc - 1;
   if (num_preloads > 0) {
     for (int i = 0; i < num_preloads; i++) {
       string path = string(argv[1 + i]);
-      picLib.loadpicture(path, path.substr(path.find_last_of("/") + 1));
+      picLib->loadpicture(path, path.substr(path.find_last_of("/") + 1));
     }
   }
 
@@ -33,19 +41,39 @@ int main(int argc, char ** argv)
 
     if (cin.eof()) {
       cout << "EOF detected." << endl;
-      break;
+      exit(EXIT_SUCCESS);
     }
 
-    vector<string> tokens;
+    vector<string> *tokens = new vector<string>;
     stringstream stream(command);
     string intermediate;
     while (getline(stream, intermediate, ' ')) {
-      tokens.push_back(intermediate);
+      tokens->push_back(intermediate);
     }
 
-    Command cmd(&tokens, &picLib);
-    cmd.execute();
+    Command* cmd = new Command(tokens, picLib);
+
+    //check if exit and do thread joining here.
+    string filename = cmd->get_filename();
+    if (filename != EMPTY_STRING) {
+      cout << "1" << endl;
+
+      map<string, PicThread*>::iterator it = filename_to_threads.find(filename);
+      if (it == filename_to_threads.end()) {
+        PicThread *trd = new PicThread();
+        it = filename_to_threads.insert(pair<string, PicThread*>(filename, trd)).first;
+        trd->run();
+      }
+
+      it->second->add(cmd);
+      continue;
+    }
+
+    //liststore or exit here.
+    misc_thread->add(cmd);
   }
+
+  delete picLib;
 
   return 0;
 }
