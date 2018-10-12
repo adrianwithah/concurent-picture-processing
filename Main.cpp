@@ -39,6 +39,8 @@ int main(int argc, char ** argv)
     string command;
     getline (cin, command);
 
+    cout << "Command entered: " << command;
+
     if (cin.eof()) {
       cout << "EOF detected. Exiting." << endl;
 
@@ -76,6 +78,15 @@ int main(int argc, char ** argv)
     }
 
     //liststore or exit here.
+    if (cmd->get_instruction() == "exit") {
+      map<string, PicThread*>::iterator it;
+      for (it = filename_to_threads->begin(); it != filename_to_threads->end(); it++) {
+        it->second->join();
+      }
+
+      exit(EXIT_SUCCESS);
+    }
+
     misc_thread->add(cmd);
   }
 

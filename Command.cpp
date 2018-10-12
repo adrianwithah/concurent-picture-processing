@@ -136,7 +136,6 @@ void Command::execute() {
         return;
       }
 
-      cout << "Entered load switch case!" << endl;
       picLib->loadpicture((*args)[1], (*args)[2]);
 
       // create PicThread and add to list.
@@ -166,6 +165,7 @@ void Command::execute() {
       }
 
       picLib->savepicture((*args)[1], (*args)[2]);
+      cout << "Saved " << (*args)[1] << " to " << (*args)[2] << endl;
       break;
     case EXIT:
       // free stuff here.

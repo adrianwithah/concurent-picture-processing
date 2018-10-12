@@ -12,7 +12,7 @@ static void *thread_func(void *arg) {
   while (*(args->should_run) || !(cmd_queue->empty())) {
     queue_mutex->lock();
     if (!cmd_queue->empty()) {
-      cout << "Found command to execute!" << endl;
+      // cout << "Found command to execute!" << endl;
       Command* cmd = cmd_queue->front();
       cmd_queue->erase(cmd_queue->begin());
 
@@ -26,7 +26,7 @@ static void *thread_func(void *arg) {
     }
   }
 
-  cout << "Destroying thread." <<  endl;
+  // cout << "Destroying thread." <<  endl;
 
   delete args;
 }
@@ -45,7 +45,7 @@ void PicThread::run() {
   args->queue_mutex = queue_mutex;
 
   if (pthread_create(&running_thread, NULL, &thread_func, args) == 0) {
-    cout << "Thread created successfully!" << endl;
+    // cout << "Thread created successfully!" << endl;
   }
 }
 
