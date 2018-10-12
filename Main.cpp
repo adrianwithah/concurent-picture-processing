@@ -6,8 +6,8 @@
 #include "Utils.hpp"
 #include "Picture.hpp"
 #include "PicLibrary.hpp"
-#include "Command.hpp"
 #include "PicThread.hpp"
+#include "Command.hpp"
 
 using namespace std;
 
@@ -18,9 +18,9 @@ int main(int argc, char ** argv)
 {
   PicLibrary *picLib = new PicLibrary();
 
-  map<string, PicThread*> filename_to_threads;
+  map<string, PicThread*> *filename_to_threads = new map<string, PicThread*>();
   PicThread *misc_thread = new PicThread();
-  filename_to_threads.insert(pair<string, PicThread*>(MISC_THREAD_NAME, misc_thread));
+  filename_to_threads->insert(pair<string, PicThread*>(MISC_THREAD_NAME, misc_thread));
   misc_thread->run();
 
   int num_preloads = argc - 1;
@@ -40,7 +40,13 @@ int main(int argc, char ** argv)
     getline (cin, command);
 
     if (cin.eof()) {
-      cout << "EOF detected." << endl;
+      cout << "EOF detected. Exiting." << endl;
+
+      map<string, PicThread*>::iterator it;
+      for (it = filename_to_threads->begin(); it != filename_to_threads->end(); it++) {
+        it->second->join();
+      }
+
       exit(EXIT_SUCCESS);
     }
 
@@ -51,17 +57,17 @@ int main(int argc, char ** argv)
       tokens->push_back(intermediate);
     }
 
-    Command* cmd = new Command(tokens, picLib);
+    Command* cmd = new Command(tokens, picLib, filename_to_threads);
 
     //check if exit and do thread joining here.
     string filename = cmd->get_filename();
     if (filename != EMPTY_STRING) {
       cout << "1" << endl;
 
-      map<string, PicThread*>::iterator it = filename_to_threads.find(filename);
-      if (it == filename_to_threads.end()) {
+      map<string, PicThread*>::iterator it = filename_to_threads->find(filename);
+      if (it == filename_to_threads->end()) {
         PicThread *trd = new PicThread();
-        it = filename_to_threads.insert(pair<string, PicThread*>(filename, trd)).first;
+        it = filename_to_threads->insert(pair<string, PicThread*>(filename, trd)).first;
         trd->run();
       }
 

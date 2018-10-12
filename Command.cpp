@@ -1,8 +1,9 @@
 #include "Command.hpp"
 
-Command::Command(vector<string> *args, PicLibrary *picLib) {
+Command::Command(vector<string> *args, PicLibrary *picLib, map<string, PicThread*> *filename_to_threads) {
   this->args = args;
   this->picLib = picLib;
+  this->filename_to_threads = filename_to_threads;
   parse_arguments();
 }
 
@@ -98,7 +99,7 @@ void Command::execute() {
 
   switch (instr) {
     case LISTSTORE:
-      (*picLib).print_picturestore();
+      picLib->print_picturestore();
       break;
     case LOAD:
       if ((*args).size() != 3) {
@@ -107,25 +108,35 @@ void Command::execute() {
       }
 
       cout << "Entered load switch case!" << endl;
-      (*picLib).loadpicture((*args)[1], (*args)[2]);
+      picLib->loadpicture((*args)[1], (*args)[2]);
 
       // create PicThread and add to list.
       break;
-    case UNLOAD:
+    case UNLOAD: {
       if ((*args).size() != 2) {
         cout << "Unload usage: unload <file_name>." << endl;
         return;
       }
 
-      (*picLib).unloadpicture((*args)[1]);
+      string filename = (*args)[1];
+      picLib->unloadpicture(filename);
+
+      map<string, PicThread*>::iterator it = filename_to_threads->find(filename);
+      if (it != filename_to_threads->end()) {
+        it->second->join();
+        filename_to_threads->erase(filename);
+      }
+
       break;
+    }
+
     case SAVE:
       if ((*args).size() != 3) {
         cout << "Save usage: save <file_name> <file_path>." << endl;
         return;
       }
 
-      (*picLib).savepicture((*args)[1], (*args)[2]);
+      picLib->savepicture((*args)[1], (*args)[2]);
       break;
     case EXIT:
       // free stuff here.
@@ -138,7 +149,7 @@ void Command::execute() {
         return;
       }
 
-      (*picLib).display((*args)[1]);
+      picLib->display((*args)[1]);
       break;
     case INVERT:
       if ((*args).size() != 2) {
@@ -146,7 +157,7 @@ void Command::execute() {
         return;
       }
 
-      (*picLib).invert((*args)[1]);
+      picLib->invert((*args)[1]);
       break;
     case GRAYSCALE:
       if ((*args).size() != 2) {
@@ -154,7 +165,7 @@ void Command::execute() {
         return;
       }
 
-      (*picLib).grayscale((*args)[1]);
+      picLib->grayscale((*args)[1]);
       break;
     case ROTATE: {
       int rotateBy = stoi((*args)[1]);
@@ -163,7 +174,7 @@ void Command::execute() {
         return;
       }
 
-      (*picLib).rotate(rotateBy, (*args)[2]);
+      picLib->rotate(rotateBy, (*args)[2]);
       break;
     }
 
@@ -173,7 +184,7 @@ void Command::execute() {
         return;
       }
 
-      (*picLib).flipVH((*args)[1][0], (*args)[2]);
+      picLib->flipVH((*args)[1][0], (*args)[2]);
       break;
     case BLUR:
       if ((*args).size() != 2) {
@@ -181,7 +192,7 @@ void Command::execute() {
         return;
       }
 
-      (*picLib).blur((*args)[1]);
+      picLib->blur((*args)[1]);
       break;
     case UNRECOGNISED:
       cout << "Unrecognised command.. Please try again." << endl;
@@ -195,7 +206,7 @@ void Command::execute() {
   //
   // if ((*args)[0] == "liststore") {
   //
-  //   (*picLib).print_picturestore() ;
+  //   picLib->print_picturestore() ;
   //
   // } else if ((*args)[0] == "load") {
   //
@@ -204,7 +215,7 @@ void Command::execute() {
   //     return;
   //   }
   //
-  //   (*picLib).loadpicture((*args)[1], (*args)[2]);
+  //   picLib->loadpicture((*args)[1], (*args)[2]);
   //
   //   // create PicThread and add to list.
   //
@@ -215,7 +226,7 @@ void Command::execute() {
   //     return;
   //   }
   //
-  //   (*picLib).unloadpicture((*args)[1]);
+  //   picLib->unloadpicture((*args)[1]);
   //
   // }  else if ((*args)[0] == "save") {
   //
@@ -224,7 +235,7 @@ void Command::execute() {
   //     return;
   //   }
   //
-  //   (*picLib).savepicture((*args)[1], (*args)[2]);
+  //   picLib->savepicture((*args)[1], (*args)[2]);
   //
   // }  else if ((*args)[0] == "exit") {
   //
@@ -238,7 +249,7 @@ void Command::execute() {
   //     return;
   //   }
   //
-  //   (*picLib).display((*args)[1]);
+  //   picLib->display((*args)[1]);
   //
   // }  else if ((*args)[0] == "inverint pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex);t") {
   //
@@ -247,7 +258,7 @@ void Command::execute() {
   //     return;
   //   }
   //
-  //   (*picLib).invert((*args)[1]);
+  //   picLib->invert((*args)[1]);
   //
   // }  else if ((*args)[0] == "grayscale") {
   //
@@ -256,7 +267,7 @@ void Command::execute() {
   //     return;
   //   }
   //
-  //   (*picLib).grayscale((*args)[1]);
+  //   picLib->grayscale((*args)[1]);
   //
   // }  else if ((*args)[0] == "rotate") {
   //
@@ -266,7 +277,7 @@ void Command::execute() {
   //     return;
   //   }
   //
-  //   (*picLib).rotate(rotateBy, (*args)[2]);
+  //   picLib->rotate(rotateBy, (*args)[2]);
   //
   // }  else if ((*args)[0] == "flip") {
   //
@@ -275,7 +286,7 @@ void Command::execute() {
   //     return;
   //   }
   //
-  //   (*picLib).flipVH((*args)[1][0], (*args)[2]);
+  //   picLib->flipVH((*args)[1][0], (*args)[2]);
   //
   // }  else if ((*args)[0] == "blur") {
   //
@@ -284,7 +295,7 @@ void Command::execute() {
   //     return;
   //   }
   //
-  //   (*picLib).blur((*args)[1]);
+  //   picLib->blur((*args)[1]);
   //
   // }  else {
   //   cout << "Unrecognised command.. Please try again." << endl;

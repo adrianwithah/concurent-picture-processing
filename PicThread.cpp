@@ -26,6 +26,8 @@ static void *thread_func(void *arg) {
     }
   }
 
+  cout << "Destroying thread." <<  endl;
+
   delete args;
 }
 

@@ -6,6 +6,9 @@
 
 using namespace std;
 
+//fwd declaration.
+class Command;
+
 struct thread_args {
   vector<Command*> *cmd_queue;
   bool *should_run;

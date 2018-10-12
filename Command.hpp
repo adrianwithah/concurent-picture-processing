@@ -2,8 +2,11 @@
 #define COMMAND_H
 
 #include "PicLibrary.hpp"
+#include "PicThread.hpp"
 
 using namespace std;
+
+class PicThread;
 
 enum Instruction {
   LISTSTORE,
@@ -25,10 +28,11 @@ class Command {
   private:
   vector<string> *args;
   PicLibrary *picLib;
+  map<string, PicThread*> *filename_to_threads;
   Instruction instr;
 
   public:
-  Command(vector<string> *args, PicLibrary *picLib);
+  Command(vector<string> *args, PicLibrary *picLib, map<string, PicThread*> *filename_to_threads);
   void parse_arguments();
   string get_filename();
   void execute();
