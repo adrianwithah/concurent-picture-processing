@@ -149,11 +149,11 @@ void Command::execute() {
       string filename = (*args)[1];
       picLib->unloadpicture(filename);
 
-      map<string, PicThread*>::iterator it = filename_to_threads->find(filename);
-      if (it != filename_to_threads->end()) {
-        it->second->join();
-        filename_to_threads->erase(filename);
-      }
+      // map<string, PicThread*>::iterator it = filename_to_threads->find(filename);
+      // if (it != filename_to_threads->end()) {
+      //   it->second->join();
+      //   filename_to_threads->erase(filename);
+      // }
 
       break;
     }

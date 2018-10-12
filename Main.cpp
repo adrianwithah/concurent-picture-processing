@@ -39,7 +39,7 @@ int main(int argc, char ** argv)
     string command;
     getline (cin, command);
 
-    cout << "Command entered: " << command;
+    cout << "Command entered: " << command << endl;
 
     vector<string> *tokens = new vector<string>;
     stringstream stream(command);
@@ -53,8 +53,6 @@ int main(int argc, char ** argv)
     //check if exit and do thread joining here.
     string filename = cmd->get_filename();
     if (filename != EMPTY_STRING) {
-      cout << "1" << endl;
-
       map<string, PicThread*>::iterator it = filename_to_threads->find(filename);
       if (it == filename_to_threads->end()) {
         PicThread *trd = new PicThread();

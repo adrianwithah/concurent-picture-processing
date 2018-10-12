@@ -1,0 +1,4 @@
+load images/ducks1.jpg duck1
+unload duck1
+load images/ducks1.jpg duck1
+exit
