@@ -41,17 +41,6 @@ int main(int argc, char ** argv)
 
     cout << "Command entered: " << command;
 
-    if (cin.eof()) {
-      cout << "EOF detected. Exiting." << endl;
-
-      map<string, PicThread*>::iterator it;
-      for (it = filename_to_threads->begin(); it != filename_to_threads->end(); it++) {
-        it->second->join();
-      }
-
-      exit(EXIT_SUCCESS);
-    }
-
     vector<string> *tokens = new vector<string>;
     stringstream stream(command);
     string intermediate;
@@ -88,6 +77,17 @@ int main(int argc, char ** argv)
     }
 
     misc_thread->add(cmd);
+
+    if (cin.eof()) {
+      cout << "EOF detected. Waiting for all commands to complete." << endl;
+
+      map<string, PicThread*>::iterator it;
+      for (it = filename_to_threads->begin(); it != filename_to_threads->end(); it++) {
+        it->second->join();
+      }
+
+      exit(EXIT_SUCCESS);
+    }
   }
 
   delete picLib;
