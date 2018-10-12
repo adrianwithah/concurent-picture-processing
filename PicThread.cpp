@@ -9,7 +9,7 @@ static void *thread_func(void *arg) {
   vector<Command*> *cmd_queue = args->cmd_queue;
   mutex *queue_mutex = args->queue_mutex;
 
-  while (*(args->should_run)) {
+  while (*(args->should_run) || !(cmd_queue->empty())) {
     queue_mutex->lock();
     if (!cmd_queue->empty()) {
       cout << "Found command to execute!" << endl;
