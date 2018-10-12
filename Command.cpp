@@ -7,6 +7,35 @@ Command::Command(vector<string> *args, PicLibrary *picLib, map<string, PicThread
   parse_arguments();
 }
 
+string Command::get_instruction() {
+  switch (instr) {
+    case LISTSTORE:
+      return "liststore";
+    case LOAD:
+      return "load";
+    case UNLOAD:
+      return "unload";
+    case SAVE:
+      return "save";
+    case EXIT:
+      return "exit";
+    case DISPLAY:
+      return "display";
+    case INVERT:
+      return "invert";
+    case GRAYSCALE:
+      return "grayscale";
+    case ROTATE:
+      return "rotate";
+    case FLIP:
+      return "flip";
+    case BLUR:
+      return "blur";
+    case UNRECOGNISED:
+      return "unrecognised";
+  }
+}
+
 void Command::parse_arguments() {
   if ((*args).size() == 0) {
     instr = Instruction::UNRECOGNISED;

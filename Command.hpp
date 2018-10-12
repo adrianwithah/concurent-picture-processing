@@ -35,6 +35,7 @@ class Command {
   Command(vector<string> *args, PicLibrary *picLib, map<string, PicThread*> *filename_to_threads);
   void parse_arguments();
   string get_filename();
+  string get_instruction();
   void execute();
 
 };

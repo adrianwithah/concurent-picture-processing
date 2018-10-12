@@ -34,7 +34,7 @@ static void *thread_func(void *arg) {
 void PicThread::add(Command* cmd) {
   queue_mutex->lock();
   cmd_queue->push_back(cmd);
-  cout << "Added command to queue!" << endl;
+  cout << "Added command to queue: " << cmd->get_instruction() << endl;
   queue_mutex->unlock();
 }
 
