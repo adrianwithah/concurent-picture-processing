@@ -39,14 +39,17 @@ void PicLibrary::savepicture(string filename, string path) {
   map<string, Picture>::iterator it = picStore.find(filename);
 
   if (it == picStore.end()) {
-    cout << "Picture: " << filename << " doesn't exist" << endl;
+    cout << "Picture: " << filename << " doesn't exist, saving failed." << endl;
     return;
   }
 
   Utils utils;
   if (!utils.saveimage(it->second.getimage(), path)) {
     cout << "Failed to save picture." << endl;
+    return;
   }
+
+  cout << "Saved " << filename << " to " << path << endl;
 }
 
 void PicLibrary::display(string filename) {

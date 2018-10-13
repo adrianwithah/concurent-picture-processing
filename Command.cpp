@@ -135,6 +135,7 @@ void Command::execute() {
     while (!syncer->is_my_turn(this)) {
       pthread_yield();
     }
+    syncer->pop();
   }
 
   switch (instr) {
@@ -167,7 +168,6 @@ void Command::execute() {
       }
 
       picLib->savepicture((*args)[1], (*args)[2]);
-      cout << "Saved " << (*args)[1] << " to " << (*args)[2] << endl;
       break;
     case EXIT:
       // free stuff here.
