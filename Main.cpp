@@ -50,6 +50,13 @@ int main(int argc, char ** argv)
 
     Command* cmd = new Command(tokens, picLib, filename_to_threads);
 
+    CommandSyncer *syncer = new CommandSyncer();
+    string inst = cmd->get_instruction();
+    if (inst == "liststore" || inst == "load" || inst == "unload" || inst == "save" || inst == "display") {
+      syncer->add(cmd);
+      cmd->reg_syncer(syncer);
+    }
+
     //check if exit and do thread joining here.
     string filename = cmd->get_filename();
     if (filename != EMPTY_STRING) {

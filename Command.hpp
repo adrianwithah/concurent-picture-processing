@@ -3,9 +3,11 @@
 
 #include "PicLibrary.hpp"
 #include "PicThread.hpp"
+#include "CommandSyncer.hpp"
 
 using namespace std;
 
+class CommandSyncer;
 class PicThread;
 
 enum Instruction {
@@ -26,18 +28,19 @@ enum Instruction {
 class Command {
 
   private:
-  vector<string> *args;
-  PicLibrary *picLib;
-  map<string, PicThread*> *filename_to_threads;
-  Instruction instr;
+    vector<string> *args;
+    PicLibrary *picLib;
+    map<string, PicThread*> *filename_to_threads;
+    Instruction instr;
+    CommandSyncer *syncer = NULL;
 
   public:
-  Command(vector<string> *args, PicLibrary *picLib, map<string, PicThread*> *filename_to_threads);
-  void parse_arguments();
-  string get_filename();
-  string get_instruction();
-  void execute();
-
+    Command(vector<string> *args, PicLibrary *picLib, map<string, PicThread*> *filename_to_threads);
+    void parse_arguments();
+    string get_filename();
+    string get_instruction();
+    void execute();
+    void reg_syncer(CommandSyncer *syncer);
 };
 
 #endif

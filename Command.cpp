@@ -1,10 +1,15 @@
 #include "Command.hpp"
+#include <pthread.h>
 
 Command::Command(vector<string> *args, PicLibrary *picLib, map<string, PicThread*> *filename_to_threads) {
   this->args = args;
   this->picLib = picLib;
   this->filename_to_threads = filename_to_threads;
   parse_arguments();
+}
+
+void Command::reg_syncer(CommandSyncer* syncer) {
+  this->syncer = syncer;
 }
 
 string Command::get_instruction() {
@@ -126,6 +131,12 @@ void Command::execute() {
 
   cout << "Executing command!" << endl;
 
+  if (syncer != NULL) {
+    while (!syncer->is_my_turn(this)) {
+      pthread_yield();
+    }
+  }
+
   switch (instr) {
     case LISTSTORE:
       picLib->print_picturestore();
@@ -137,8 +148,6 @@ void Command::execute() {
       }
 
       picLib->loadpicture((*args)[1], (*args)[2]);
-
-      // create PicThread and add to list.
       break;
     case UNLOAD: {
       if ((*args).size() != 2) {
@@ -148,13 +157,6 @@ void Command::execute() {
 
       string filename = (*args)[1];
       picLib->unloadpicture(filename);
-
-      // map<string, PicThread*>::iterator it = filename_to_threads->find(filename);
-      // if (it != filename_to_threads->end()) {
-      //   it->second->join();
-      //   filename_to_threads->erase(filename);
-      // }
-
       break;
     }
 
@@ -227,107 +229,4 @@ void Command::execute() {
       cout << "Unrecognised command.. Please try again." << endl;
       break;
   }
-
-  // if ((*args).size() == 0) {
-  //   cout << "Unrecognised command.. Please try again." << endl;
-  //   return;
-  // }
-  //
-  // if ((*args)[0] == "liststore") {
-  //
-  //   picLib->print_picturestore() ;
-  //
-  // } else if ((*args)[0] == "load") {
-  //
-  //   if ((*args).size() != 3) {
-  //     cout << "Load usage: load <file_path> <file_name>." << endl;
-  //     return;
-  //   }
-  //
-  //   picLib->loadpicture((*args)[1], (*args)[2]);
-  //
-  //   // create PicThread and add to list.
-  //
-  // } else if ((*args)[0] == "unload") {
-  //
-  //   if ((*args).size() != 2) {
-  //     cout << "Unload usage: unload <file_name>." << endl;
-  //     return;
-  //   }
-  //
-  //   picLib->unloadpicture((*args)[1]);
-  //
-  // }  else if ((*args)[0] == "save") {
-  //
-  //   if ((*args).size() != 3) {
-  //     cout << "Save usage: save <file_name> <file_path>." << endl;
-  //     return;
-  //   }
-  //
-  //   picLib->savepicture((*args)[1], (*args)[2]);
-  //
-  // }  else if ((*args)[0] == "exit") {
-  //
-  //   // free stuff here.
-  //   return;
-  //
-  // }  else if ((*args)[0] == "display") {
-  //
-  //   if ((*args).size() != 2) {
-  //     cout << "Display usage: display <file_name>." << endl;
-  //     return;
-  //   }
-  //
-  //   picLib->display((*args)[1]);
-  //
-  // }  else if ((*args)[0] == "inverint pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex);t") {
-  //
-  //   if ((*args).size() != 2) {
-  //     cout << "Invert usage: invert <file_name>." << endl;
-  //     return;
-  //   }
-  //
-  //   picLib->invert((*args)[1]);
-  //
-  // }  else if ((*args)[0] == "grayscale") {
-  //
-  //   if ((*args).size() != 2) {
-  //     cout << "Grayscale usage: grayscale <file_name>." << endl;
-  //     return;
-  //   }
-  //
-  //   picLib->grayscale((*args)[1]);
-  //
-  // }  else if ((*args)[0] == "rotate") {
-  //
-  //   int rotateBy = stoi((*args)[1]);
-  //   if ((*args).size() != 3 || rotateBy != 90 && rotateBy != 180 && rotateBy != 270) {
-  //     cout << "Rotate usage: rotate [90|180|270] <file_name>." << endl;
-  //     return;
-  //   }
-  //
-  //   picLib->rotate(rotateBy, (*args)[2]);
-  //
-  // }  else if ((*args)[0] == "flip") {
-  //
-  //   if ((*args).size() != 3 || (*args)[1] != "H" && (*args)[1] != "V") {
-  //     cout << "Flip usage: flip [H|V] <file_name>." << endl;
-  //     return;
-  //   }
-  //
-  //   picLib->flipVH((*args)[1][0], (*args)[2]);
-  //
-  // }  else if ((*args)[0] == "blur") {
-  //
-  //   if ((*args).size() != 2) {
-  //     cout << "Blur usage: blur <file_name>." << endl;
-  //     return;
-  //   }
-  //
-  //   picLib->blur((*args)[1]);
-  //
-  // }  else {
-  //   cout << "Unrecognised command.. Please try again." << endl;
-  //   return;
-  // }
 }

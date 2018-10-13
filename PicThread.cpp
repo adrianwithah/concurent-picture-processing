@@ -5,6 +5,7 @@
 PicThread::PicThread(){}
 
 static void *thread_func(void *arg) {
+
   thread_args *args = (thread_args*) arg;
   vector<Command*> *cmd_queue = args->cmd_queue;
   mutex *queue_mutex = args->queue_mutex;
