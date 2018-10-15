@@ -10,8 +10,6 @@ void PicLibrary::print_picturestore() {
 }
 
 void PicLibrary::loadpicture(string path, string filename) {
-  cout << "Executing load picture command!" << endl;
-
   Picture *pic = new Picture(path);
 
   if (pic->getimage().empty()) {
@@ -41,7 +39,7 @@ void PicLibrary::unloadpicture(string filename) {
     return;
   }
 
-  cout << "Unload delete 1" << endl;
+  cout << "Unload delete  1" << endl;
   delete it->second;
   picStore.erase(it);
   cout << "Unload delete 2" << endl;

@@ -128,8 +128,6 @@ string Command::get_filename() {
 
 void Command::execute() {
 
-  cout << "Executing command!" << endl;
-
   if (syncer != NULL) {
     while (!syncer->is_my_turn(this)) {
       pthread_yield();

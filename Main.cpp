@@ -101,7 +101,5 @@ int main(int argc, char ** argv)
     }
   }
 
-  delete picLib;
-
   return 0;
 }
