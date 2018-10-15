@@ -21,6 +21,7 @@ void join_threads_and_exit(map<string, PicThread*> *filename_to_threads, Command
     delete it->second;
   }
 
+  picLib->free();
   delete picLib;
   delete filename_to_threads;
   delete syncer;

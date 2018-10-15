@@ -16,11 +16,13 @@ void PicLibrary::loadpicture(string path, string filename) {
 
   if (pic->getimage().empty()) {
     cout << "Cannot find image at: " << path << endl;
+    delete pic;
     return;
   }
 
   if (!picStore.insert(pair<string, Picture*>(filename, pic)).second) {
     cout << "Picture with name: " << filename << " already exists!" << endl;
+    delete pic;
     return;
   }
 
@@ -28,11 +30,17 @@ void PicLibrary::loadpicture(string path, string filename) {
 }
 
 void PicLibrary::unloadpicture(string filename) {
-  if (picStore.erase(filename) > 0) {
-    cout << "Removed picture: " << filename << endl;
-  } else {
-    cout << "Failed to remove picture: " << filename << endl;
+  map<string, Picture*>::iterator it = picStore.find(filename);
+
+  if (it == picStore.end()) {
+    cout << "Picture: " << filename << " doesn't exist, saving failed." << endl;
+    return;
   }
+
+  delete it->second;
+  picStore.erase(it);
+
+  cout << "Removed picture: " << filename << endl;
 }
 
 void PicLibrary::savepicture(string filename, string path) {
@@ -257,4 +265,11 @@ void PicLibrary::blur(string filename) {
   delete it->second;
   it->second = new_pic;
   cout << "Blured " << filename << " successfully." << endl;
+}
+
+void PicLibrary::free() {
+  map<string, Picture*>::iterator it;
+  for (it = picStore.begin(); it != picStore.end(); it++) {
+    delete it->second;
+  }
 }
