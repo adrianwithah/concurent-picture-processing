@@ -14,9 +14,25 @@ using namespace std;
 const string EMPTY_STRING = "";
 const string MISC_THREAD_NAME = "MISCELLANEOUS_THREAD";
 
+void join_threads_and_exit(map<string, PicThread*> *filename_to_threads, CommandSyncer *syncer, PicLibrary *picLib) {
+  map<string, PicThread*>::iterator it;
+  for (it = filename_to_threads->begin(); it != filename_to_threads->end(); it++) {
+    it->second->join();
+    delete it->second;
+  }
+
+  delete picLib;
+  delete filename_to_threads;
+  delete syncer;
+
+  exit(EXIT_SUCCESS);
+}
+
+
 int main(int argc, char ** argv)
 {
   PicLibrary *picLib = new PicLibrary();
+  CommandSyncer *syncer = new CommandSyncer();
 
   map<string, PicThread*> *filename_to_threads = new map<string, PicThread*>();
   PicThread *misc_thread = new PicThread();
@@ -50,7 +66,6 @@ int main(int argc, char ** argv)
 
     Command* cmd = new Command(tokens, picLib, filename_to_threads);
 
-    CommandSyncer *syncer = new CommandSyncer();
     string inst = cmd->get_instruction();
     if (inst == "liststore" || inst == "load" || inst == "unload" || inst == "save" || inst == "display") {
       syncer->add(cmd);
@@ -73,12 +88,7 @@ int main(int argc, char ** argv)
 
     //liststore or exit here.
     if (cmd->get_instruction() == "exit") {
-      map<string, PicThread*>::iterator it;
-      for (it = filename_to_threads->begin(); it != filename_to_threads->end(); it++) {
-        it->second->join();
-      }
-
-      exit(EXIT_SUCCESS);
+      join_threads_and_exit(filename_to_threads, syncer, picLib);
     }
 
     misc_thread->add(cmd);
@@ -86,12 +96,7 @@ int main(int argc, char ** argv)
     if (cin.eof()) {
       cout << "EOF detected. Waiting for all commands to complete." << endl;
 
-      map<string, PicThread*>::iterator it;
-      for (it = filename_to_threads->begin(); it != filename_to_threads->end(); it++) {
-        it->second->join();
-      }
-
-      exit(EXIT_SUCCESS);
+      join_threads_and_exit(filename_to_threads, syncer, picLib);
     }
   }
 
