@@ -1,10 +1,9 @@
 #include "Command.hpp"
 #include <pthread.h>
 
-Command::Command(vector<string> *args, PicLibrary *picLib, map<string, PicThread*> *filename_to_threads) {
+Command::Command(vector<string> *args, PicLibrary *picLib) {
   this->args = args;
   this->picLib = picLib;
-  this->filename_to_threads = filename_to_threads;
   parse_arguments();
 }
 

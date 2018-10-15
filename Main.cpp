@@ -65,7 +65,7 @@ int main(int argc, char ** argv)
       tokens->push_back(intermediate);
     }
 
-    Command* cmd = new Command(tokens, picLib, filename_to_threads);
+    Command* cmd = new Command(tokens, picLib);
 
     string inst = cmd->get_instruction();
     if (inst == "liststore" || inst == "load" || inst == "unload" || inst == "save" || inst == "display") {
