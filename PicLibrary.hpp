@@ -9,7 +9,7 @@ using namespace std;
 class PicLibrary {
 
   private:
-    map<string, Picture> picStore;
+    map<string, Picture*> picStore;
 
   public:
   // defaiult constructor/deconstructor

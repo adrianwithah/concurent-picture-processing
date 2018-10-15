@@ -12,14 +12,14 @@ void PicLibrary::print_picturestore() {
 void PicLibrary::loadpicture(string path, string filename) {
   cout << "Executing load picture command!" << endl;
 
-  Picture pic(path);
+  Picture *pic = new Picture(path);
 
-  if (pic.getimage().empty()) {
+  if (pic->getimage().empty()) {
     cout << "Cannot find image at: " << path << endl;
     return;
   }
 
-  if (!picStore.insert(pair<string, Picture>(filename, pic)).second) {
+  if (!picStore.insert(pair<string, Picture*>(filename, pic)).second) {
     cout << "Picture with name: " << filename << " already exists!" << endl;
     return;
   }
@@ -36,7 +36,7 @@ void PicLibrary::unloadpicture(string filename) {
 }
 
 void PicLibrary::savepicture(string filename, string path) {
-  map<string, Picture>::iterator it = picStore.find(filename);
+  map<string, Picture*>::iterator it = picStore.find(filename);
 
   if (it == picStore.end()) {
     cout << "Picture: " << filename << " doesn't exist, saving failed." << endl;
@@ -44,7 +44,7 @@ void PicLibrary::savepicture(string filename, string path) {
   }
 
   Utils utils;
-  if (!utils.saveimage(it->second.getimage(), path)) {
+  if (!utils.saveimage(it->second->getimage(), path)) {
     cout << "Failed to save picture." << endl;
     return;
   }
@@ -53,7 +53,7 @@ void PicLibrary::savepicture(string filename, string path) {
 }
 
 void PicLibrary::display(string filename) {
-  map<string, Picture>::iterator it = picStore.find(filename);
+  map<string, Picture*>::iterator it = picStore.find(filename);
 
   if (it == picStore.end()) {
     cout << "Picture: " << filename << " doesn't exist" << endl;
@@ -61,18 +61,18 @@ void PicLibrary::display(string filename) {
   }
 
   Utils utils;
-  utils.displayimage(it->second.getimage());
+  utils.displayimage(it->second->getimage());
 }
 
 void PicLibrary::invert(string filename) {
-  map<string, Picture>::iterator it = picStore.find(filename);
+  map<string, Picture*>::iterator it = picStore.find(filename);
 
   if (it == picStore.end()) {
     cout << "Picture: " << filename << " doesn't exist" << endl;
     return;
   }
 
-  Picture pic = it->second;
+  Picture pic = *(it->second);
   int width = pic.getwidth();
   int height = pic.getheight();
 
@@ -88,14 +88,14 @@ void PicLibrary::invert(string filename) {
 }
 
 void PicLibrary::grayscale(string filename) {
-  map<string, Picture>::iterator it = picStore.find(filename);
+  map<string, Picture*>::iterator it = picStore.find(filename);
 
   if (it == picStore.end()) {
     cout << "Picture: " << filename << " doesn't exist" << endl;
     return;
   }
 
-  Picture pic = it->second;
+  Picture pic = *(it->second);
   int origWidth = pic.getwidth();
   int origHeight = pic.getheight();
 
@@ -112,53 +112,56 @@ void PicLibrary::grayscale(string filename) {
 }
 
 void PicLibrary::rotate(int angle, string filename) {
-  map<string, Picture>::iterator it = picStore.find(filename);
+  map<string, Picture*>::iterator it = picStore.find(filename);
 
   if (it == picStore.end()) {
     cout << "Picture: " << filename << " doesn't exist" << endl;
     return;
   }
 
-  Picture pic = it->second;
+  Picture pic = *(it->second);
   int origWidth = pic.getwidth();
   int origHeight = pic.getheight();
   Utils utils;
 
   switch (angle) {
     case 90: {
-      Picture new_pic(origHeight, origWidth);
+      Picture *new_pic = new Picture(origHeight, origWidth);
       for (int x = 0; x < origWidth; x++) {
         for (int y = 0; y < origHeight; y++) {
-          new_pic.setpixel(origHeight - y - 1, x, pic.getpixel(x, y));
+          new_pic->setpixel(origHeight - y - 1, x, pic.getpixel(x, y));
         }
       }
 
+      delete it->second;
       it->second = new_pic;
       cout << "Rotated " << filename << " by 90deg clockwise successfully." << endl;
       break;
     }
 
     case 180: {
-      Picture new_pic(origWidth, origHeight);
+      Picture *new_pic = new Picture(origWidth, origHeight);
       for (int x = 0; x < origWidth; x++) {
         for (int y = 0; y < origHeight; y++) {
-          new_pic.setpixel(origWidth - x - 1, origHeight - y - 1, pic.getpixel(x, y));
+          new_pic->setpixel(origWidth - x - 1, origHeight - y - 1, pic.getpixel(x, y));
         }
       }
 
+      delete it->second;
       it->second = new_pic;
       cout << "Rotated " << filename << " by 180deg clockwise successfully." << endl;
       break;
     }
 
     case 270: {
-      Picture new_pic(origHeight, origWidth);
+      Picture *new_pic = new Picture(origHeight, origWidth);
       for (int x = 0; x < origWidth; x++) {
         for (int y = 0; y < origHeight; y++) {
-          new_pic.setpixel(y, origWidth - x - 1, pic.getpixel(x, y));
+          new_pic->setpixel(y, origWidth - x - 1, pic.getpixel(x, y));
         }
       }
 
+      delete it->second;
       it->second = new_pic;
       cout << "Rotated " << filename << " by 270deg clockwise successfully." << endl;
       break;
@@ -168,28 +171,29 @@ void PicLibrary::rotate(int angle, string filename) {
 
 void PicLibrary::flipVH(char plane, string filename) {
 
-  map<string, Picture>::iterator it = picStore.find(filename);
+  map<string, Picture*>::iterator it = picStore.find(filename);
 
   if (it == picStore.end()) {
     cout << "Picture: " << filename << " doesn't exist" << endl;
     return;
   }
 
-  Picture pic = it->second;
+  Picture pic = *(it->second);
   int origWidth = pic.getwidth();
   int origHeight = pic.getheight();
 
-  Picture new_pic(origWidth, origHeight);
+  Picture *new_pic = new Picture(origWidth, origHeight);
 
   switch (plane) {
     case 'H':
 
       for (int x = 0; x < origWidth; x++) {
         for (int y = 0; y < origHeight; y++) {
-          new_pic.setpixel(origWidth - x - 1, y, pic.getpixel(x, y));
+          new_pic->setpixel(origWidth - x - 1, y, pic.getpixel(x, y));
         }
       }
 
+      delete it->second;
       it->second = new_pic;
       cout << "Rotated " << filename << " horizontally successfully." << endl;
 
@@ -198,10 +202,11 @@ void PicLibrary::flipVH(char plane, string filename) {
 
       for (int x = 0; x < origWidth; x++) {
         for (int y = 0; y < origHeight; y++) {
-          new_pic.setpixel(x, origHeight - y - 1, pic.getpixel(x, y));
+          new_pic->setpixel(x, origHeight - y - 1, pic.getpixel(x, y));
         }
       }
 
+      delete it->second;
       it->second = new_pic;
       cout << "Flipped " << filename << " vertically successfully." << endl;
       break;
@@ -209,18 +214,18 @@ void PicLibrary::flipVH(char plane, string filename) {
 }
 
 void PicLibrary::blur(string filename) {
-  map<string, Picture>::iterator it = picStore.find(filename);
+  map<string, Picture*>::iterator it = picStore.find(filename);
 
   if (it == picStore.end()) {
     cout << "Picture: " << filename << " doesn't exist" << endl;
     return;
   }
 
-  Picture pic = it->second;
+  Picture pic = *(it->second);
   int origWidth = pic.getwidth();
   int origHeight = pic.getheight();
 
-  Picture new_pic(origWidth, origHeight);
+  Picture *new_pic = new Picture(origWidth, origHeight);
 
   for (int x = 1; x < origWidth - 1; x++) {
     for (int y = 1; y < origHeight - 1; y++) {
@@ -235,20 +240,21 @@ void PicLibrary::blur(string filename) {
           sumB += pixel.getblue();
         }
       }
-      new_pic.setpixel(x, y, Colour(sumR / 9, sumG / 9, sumB / 9));
+      new_pic->setpixel(x, y, Colour(sumR / 9, sumG / 9, sumB / 9));
     }
 
     for (int x = 0; x < origWidth; x++) {
-      new_pic.setpixel(x, 0, pic.getpixel(x, 0));
-      new_pic.setpixel(x, origHeight - 1, pic.getpixel(x, origHeight - 1));
+      new_pic->setpixel(x, 0, pic.getpixel(x, 0));
+      new_pic->setpixel(x, origHeight - 1, pic.getpixel(x, origHeight - 1));
     }
 
     for (int y = 1; y < origHeight - 1; y++) {
-      new_pic.setpixel(0, y, pic.getpixel(0, y));
-      new_pic.setpixel(origWidth - 1, y, pic.getpixel(origWidth - 1, y));
+      new_pic->setpixel(0, y, pic.getpixel(0, y));
+      new_pic->setpixel(origWidth - 1, y, pic.getpixel(origWidth - 1, y));
     }
   }
 
+  delete it->second;
   it->second = new_pic;
   cout << "Blured " << filename << " successfully." << endl;
 }
