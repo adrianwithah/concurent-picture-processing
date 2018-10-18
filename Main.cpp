@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstring>
 #include <assert.h>
+#include <chrono>
 
 #include "Colour.hpp"
 #include "Utils.hpp"
@@ -14,6 +15,11 @@ using namespace std;
 const string EMPTY_STRING = "";
 const string MISC_THREAD_NAME = "MISCELLANEOUS_THREAD";
 
+typedef chrono::high_resolution_clock Clock;
+typedef chrono::milliseconds milliseconds;
+Clock::time_point time_start;
+Clock::time_point time_end;
+
 void join_threads_and_exit(map<string, PicThread*> *filename_to_threads, CommandSyncer *syncer, PicLibrary *picLib) {
   map<string, PicThread*>::iterator it;
   for (it = filename_to_threads->begin(); it != filename_to_threads->end(); it++) {
@@ -26,12 +32,16 @@ void join_threads_and_exit(map<string, PicThread*> *filename_to_threads, Command
   delete filename_to_threads;
   delete syncer;
 
+  time_end = Clock::now();
+  milliseconds elapsed = std::chrono::duration_cast<milliseconds>(time_end - time_start);
+  cout << "Time taken for 10 blurs on the same picture in milliseconds: " << elapsed.count() << endl;
   exit(EXIT_SUCCESS);
 }
 
 
 int main(int argc, char ** argv)
 {
+  time_start = Clock::now();
   PicLibrary *picLib = new PicLibrary();
   CommandSyncer *syncer = new CommandSyncer();
 
