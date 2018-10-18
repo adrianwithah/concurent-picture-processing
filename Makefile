@@ -1,6 +1,6 @@
 
 picture_lib: Main.o Utils.o Colour.o Picture.o PicLibrary.o Command.o PicThread.o CommandSyncer.o
-	g++ `pkg-config --cflags opencv` Main.o Utils.o Colour.o Picture.o PicLibrary.o Command.o PicThread.o CommandSyncer.o `pkg-config --libs opencv` -o picture_lib -lpthread
+	g++ -g `pkg-config --cflags opencv` Main.o Utils.o Colour.o Picture.o PicLibrary.o Command.o PicThread.o CommandSyncer.o `pkg-config --libs opencv` -o picture_lib -lpthread
 
 Utils.o: Utils.hpp Utils.cpp
 
@@ -19,7 +19,7 @@ Command.o: Command.cpp
 CommandSyncer.o: CommandSyncer.cpp
 
 %.o: %.cpp
-	g++ -std=c++11 -c $< -lpthread
+	g++ -g -std=c++11 -c $< -lpthread
 
 clean:
 	rm -rf picture_lib *.o

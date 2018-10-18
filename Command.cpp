@@ -11,37 +11,12 @@ void Command::reg_syncer(CommandSyncer* syncer) {
   this->syncer = syncer;
 }
 
-string Command::get_instruction() {
-  switch (instr) {
-    case LISTSTORE:
-      return "liststore";
-    case LOAD:
-      return "load";
-    case UNLOAD:
-      return "unload";
-    case SAVE:
-      return "save";
-    case EXIT:
-      return "exit";
-    case DISPLAY:
-      return "display";
-    case INVERT:
-      return "invert";
-    case GRAYSCALE:
-      return "grayscale";
-    case ROTATE:
-      return "rotate";
-    case FLIP:
-      return "flip";
-    case BLUR:
-      return "blur";
-    case UNRECOGNISED:
-      return "unrecognised";
-  }
+Instruction Command::get_instruction() {
+  return instr;
 }
 
 void Command::parse_arguments() {
-  if ((*args).size() == 0) {
+  if (args->size() == 0) {
     instr = Instruction::UNRECOGNISED;
     return;
   }
@@ -132,7 +107,6 @@ void Command::execute() {
     while (!syncer->is_my_turn(this)) {
       pthread_yield();
     }
-    syncer->pop();
   }
 
   switch (instr) {
@@ -142,7 +116,7 @@ void Command::execute() {
     case LOAD:
       if ((*args).size() != 3) {
         cout << "Load usage: load <file_path> <file_name>." << endl;
-        return;
+        break;
       }
 
       picLib->loadpicture((*args)[1], (*args)[2]);
@@ -150,7 +124,7 @@ void Command::execute() {
     case UNLOAD: {
       if ((*args).size() != 2) {
         cout << "Unload usage: unload <file_name>." << endl;
-        return;
+        break;
       }
 
       string filename = (*args)[1];
@@ -161,20 +135,18 @@ void Command::execute() {
     case SAVE:
       if ((*args).size() != 3) {
         cout << "Save usage: save <file_name> <file_path>." << endl;
-        return;
+        break;
       }
 
       picLib->savepicture((*args)[1], (*args)[2]);
       break;
     case EXIT:
-      // free stuff here.
       exit(EXIT_SUCCESS);
-
       break;
     case DISPLAY:
       if ((*args).size() != 2) {
         cout << "Display usage: display <file_name>." << endl;
-        return;
+        break;
       }
 
       picLib->display((*args)[1]);
@@ -182,7 +154,7 @@ void Command::execute() {
     case INVERT:
       if ((*args).size() != 2) {
         cout << "Invert usage: invert <file_name>." << endl;
-        return;
+        break;
       }
 
       picLib->invert((*args)[1]);
@@ -190,7 +162,7 @@ void Command::execute() {
     case GRAYSCALE:
       if ((*args).size() != 2) {
         cout << "Grayscale usage: grayscale <file_name>." << endl;
-        return;
+        break;
       }
 
       picLib->grayscale((*args)[1]);
@@ -199,7 +171,7 @@ void Command::execute() {
       int rotateBy = stoi((*args)[1]);
       if ((*args).size() != 3 || rotateBy != 90 && rotateBy != 180 && rotateBy != 270) {
         cout << "Rotate usage: rotate [90|180|270] <file_name>." << endl;
-        return;
+        break;
       }
 
       picLib->rotate(rotateBy, (*args)[2]);
@@ -209,7 +181,7 @@ void Command::execute() {
     case FLIP:
       if ((*args).size() != 3 || (*args)[1] != "H" && (*args)[1] != "V") {
         cout << "Flip usage: flip [H|V] <file_name>." << endl;
-        return;
+        break;
       }
 
       picLib->flipVH((*args)[1][0], (*args)[2]);
@@ -217,7 +189,7 @@ void Command::execute() {
     case BLUR:
       if ((*args).size() != 2) {
         cout << "Blur usage: blur <file_name>." << endl;
-        return;
+        break;
       }
 
       picLib->blur((*args)[1]);
@@ -225,5 +197,9 @@ void Command::execute() {
     case UNRECOGNISED:
       cout << "Unrecognised command.. Please try again." << endl;
       break;
+  }
+
+  if (syncer != NULL && syncer->is_my_turn(this)) {
+    syncer->pop();
   }
 }

@@ -10,14 +10,14 @@ using namespace std;
 class Command;
 
 struct thread_args {
-  vector<Command*> *cmd_queue;
+  list<Command*> *cmd_queue;
   bool *should_run;
   mutex *queue_mutex;
 };
 
 class PicThread {
   private:
-    vector<Command*> *cmd_queue = new vector<Command*>;
+    list<Command*> *cmd_queue = new list<Command*>;
     pthread_t running_thread;
     bool should_run = true;
     mutex *queue_mutex = new mutex();

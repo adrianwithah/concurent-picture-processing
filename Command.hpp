@@ -38,7 +38,7 @@ class Command {
     Command(vector<string> *args, PicLibrary *picLib);
     void parse_arguments();
     string get_filename();
-    string get_instruction();
+    Instruction get_instruction();
     void execute();
     void reg_syncer(CommandSyncer *syncer);
 };

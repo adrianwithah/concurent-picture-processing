@@ -20,6 +20,9 @@ typedef chrono::milliseconds milliseconds;
 Clock::time_point time_start;
 Clock::time_point time_end;
 
+PicLibrary *picLib = new PicLibrary();
+CommandSyncer *syncer = new CommandSyncer();
+
 void join_threads_and_exit(map<string, PicThread*> *filename_to_threads, CommandSyncer *syncer, PicLibrary *picLib) {
   map<string, PicThread*>::iterator it;
   for (it = filename_to_threads->begin(); it != filename_to_threads->end(); it++) {
@@ -34,7 +37,7 @@ void join_threads_and_exit(map<string, PicThread*> *filename_to_threads, Command
 
   time_end = Clock::now();
   milliseconds elapsed = std::chrono::duration_cast<milliseconds>(time_end - time_start);
-  cout << "Time taken for 10 blurs on the same picture in milliseconds: " << elapsed.count() << endl;
+  // cout << "Time taken for 10 blurs on the same picture in milliseconds: " << elapsed.count() << endl;
   exit(EXIT_SUCCESS);
 }
 
@@ -42,8 +45,8 @@ void join_threads_and_exit(map<string, PicThread*> *filename_to_threads, Command
 int main(int argc, char ** argv)
 {
   time_start = Clock::now();
-  PicLibrary *picLib = new PicLibrary();
-  CommandSyncer *syncer = new CommandSyncer();
+  // PicLibrary *picLib = new PicLibrary();
+  // CommandSyncer *syncer = new CommandSyncer();
 
   map<string, PicThread*> *filename_to_threads = new map<string, PicThread*>();
   PicThread *misc_thread = new PicThread();
@@ -77,10 +80,18 @@ int main(int argc, char ** argv)
 
     Command* cmd = new Command(tokens, picLib);
 
-    string inst = cmd->get_instruction();
-    if (inst == "liststore" || inst == "load" || inst == "unload" || inst == "save" || inst == "display") {
-      syncer->add(cmd);
-      cmd->reg_syncer(syncer);
+    Instruction inst = cmd->get_instruction();
+    switch (inst) {
+      case Instruction::LISTSTORE:
+      case Instruction::LOAD:
+      case Instruction::UNLOAD:
+      case Instruction::SAVE:
+      case Instruction::DISPLAY:
+        syncer->add(cmd);
+        cmd->reg_syncer(syncer);
+        break;
+      default:
+        break;
     }
 
     //check if exit and do thread joining here.
@@ -97,16 +108,17 @@ int main(int argc, char ** argv)
       continue;
     }
 
-    //liststore or exit here.
-    if (cmd->get_instruction() == "exit") {
+    //liststore, unrecognised or exit here.
+    if (cmd->get_instruction() == Instruction::EXIT) {
       join_threads_and_exit(filename_to_threads, syncer, picLib);
     }
 
+    //we execute unrecognised and liststore on misc_thread.
     misc_thread->add(cmd);
 
+    //After dispatching command, we check whether we have reached EOF.
     if (cin.eof()) {
       cout << "EOF detected. Waiting for all commands to complete." << endl;
-
       join_threads_and_exit(filename_to_threads, syncer, picLib);
     }
   }

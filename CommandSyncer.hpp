@@ -10,7 +10,7 @@ class Command;
 
 class CommandSyncer {
   private:
-    vector<Command*> *sync_queue = new vector<Command*>;
+    list<Command*> *sync_queue = new list<Command*>;
     mutex *queue_lock = new mutex;
 
   public:

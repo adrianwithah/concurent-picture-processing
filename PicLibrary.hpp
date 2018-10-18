@@ -31,7 +31,7 @@ class PicLibrary {
   void invert(string filename);
   void grayscale(string filename);
   void rotate(int angle, string filename);
-  void flipVH(char plane, string filename);
+  void flipVH(char axis, string filename);
   void blur(string filename);
   void free();
 };

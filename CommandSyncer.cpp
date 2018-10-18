@@ -17,6 +17,6 @@ void CommandSyncer::add(Command* cmd) {
 
 void CommandSyncer::pop() {
   queue_lock->lock();
-  sync_queue->erase(sync_queue->begin());
+  sync_queue->pop_front();
   queue_lock->unlock();
 }

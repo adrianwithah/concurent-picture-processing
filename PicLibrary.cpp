@@ -184,7 +184,7 @@ void PicLibrary::rotate(int angle, string filename) {
   }
 }
 
-void PicLibrary::flipVH(char plane, string filename) {
+void PicLibrary::flipVH(char axis, string filename) {
 
   map<string, Picture*>::iterator it = picStore.find(filename);
 

@@ -7,15 +7,14 @@ PicThread::PicThread(){}
 static void *thread_func(void *arg) {
 
   thread_args *args = (thread_args*) arg;
-  vector<Command*> *cmd_queue = args->cmd_queue;
+  list<Command*> *cmd_queue = args->cmd_queue;
   mutex *queue_mutex = args->queue_mutex;
 
   while (*(args->should_run) || !(cmd_queue->empty())) {
     queue_mutex->lock();
     if (!cmd_queue->empty()) {
-      // cout << "Found command to execute!" << endl;
       Command* cmd = cmd_queue->front();
-      cmd_queue->erase(cmd_queue->begin());
+      cmd_queue->pop_front();
 
       queue_mutex->unlock();
 
@@ -44,8 +43,8 @@ void PicThread::run() {
   args->should_run = &should_run;
   args->queue_mutex = queue_mutex;
 
-  if (pthread_create(&running_thread, NULL, &thread_func, args) == 0) {
-    // cout << "Thread created successfully!" << endl;
+  if (!pthread_create(&running_thread, NULL, &thread_func, args) == 0) {
+    cout << "Error occured creating PicThread!" << endl;
   }
 }
 
