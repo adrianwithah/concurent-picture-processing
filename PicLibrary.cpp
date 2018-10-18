@@ -199,7 +199,7 @@ void PicLibrary::flipVH(char axis, string filename) {
 
   Picture *new_pic = new Picture(origWidth, origHeight);
 
-  switch (plane) {
+  switch (axis) {
     case 'H':
 
       for (int x = 0; x < origWidth; x++) {
