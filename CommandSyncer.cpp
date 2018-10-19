@@ -11,14 +11,6 @@ CommandSyncer::CommandSyncer() {
 }
 
 void CommandSyncer::sleep_till_turn(Command* cmd) {
-  // queue_lock->lock();
-  // cout << "trying to lock" << endl;
-  // pthread_mutex_lock(queue_lock);
-  // cout << "lock acquired" << endl;
-  // bool result = (sync_queue->front() == cmd);
-  // pthread_mutex_unlock(queue_lock);
-  // return result;
-
   pthread_mutex_lock(cmd->syncer->queue_lock);
   while (sync_queue->front() != cmd) {
     pthread_cond_wait(cmd->syncer->cond, cmd->syncer->queue_lock);
@@ -27,14 +19,12 @@ void CommandSyncer::sleep_till_turn(Command* cmd) {
 }
 
 void CommandSyncer::add(Command* cmd) {
-  // queue_lock->lock();
   pthread_mutex_lock(queue_lock);
   sync_queue->push_back(cmd);
   pthread_mutex_unlock(queue_lock);
 }
 
 void CommandSyncer::pop() {
-  // queue_lock->lock();
   pthread_mutex_lock(queue_lock);
   sync_queue->pop_front();
   pthread_cond_broadcast(cond);

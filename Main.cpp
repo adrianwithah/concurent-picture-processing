@@ -46,9 +46,6 @@ void join_threads_and_exit(map<string, PicThread*> *filename_to_threads, Command
 int main(int argc, char ** argv)
 {
   time_start = Clock::now();
-  // PicLibrary *picLib = new PicLibrary();
-  // CommandSyncer *syncer = new CommandSyncer();
-
   map<string, PicThread*> *filename_to_threads = new map<string, PicThread*>();
   PicThread *misc_thread = new PicThread();
   filename_to_threads->insert(pair<string, PicThread*>(MISC_THREAD_NAME, misc_thread));
