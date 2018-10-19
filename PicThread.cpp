@@ -51,4 +51,6 @@ void PicThread::run() {
 void PicThread::join() {
   should_run = false;
   pthread_join(running_thread, NULL);
+  delete cmd_queue;
+  delete queue_mutex;
 }

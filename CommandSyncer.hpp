@@ -18,6 +18,7 @@ class CommandSyncer {
     bool is_my_turn(Command* cmd);
     void add(Command* cmd);
     void pop();
+    void free();
 };
 
 

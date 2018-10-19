@@ -33,6 +33,7 @@ void join_threads_and_exit(map<string, PicThread*> *filename_to_threads, Command
   picLib->free();
   delete picLib;
   delete filename_to_threads;
+  syncer->free();
   delete syncer;
 
   time_end = Clock::now();

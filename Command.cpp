@@ -202,4 +202,6 @@ void Command::execute() {
   if (syncer != NULL && syncer->is_my_turn(this)) {
     syncer->pop();
   }
+
+  delete args;
 }

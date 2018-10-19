@@ -20,3 +20,8 @@ void CommandSyncer::pop() {
   sync_queue->pop_front();
   queue_lock->unlock();
 }
+
+void CommandSyncer::free() {
+  delete queue_lock;
+  delete sync_queue;
+}
