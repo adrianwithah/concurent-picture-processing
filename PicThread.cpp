@@ -22,7 +22,7 @@ static void *thread_func(void *arg) {
   while (*(args->should_run) || !(cmd_queue->empty())) {
     pthread_mutex_lock(queue_mutex);
     while (cmd_queue->empty()) {
-      if (*(args->should_run)) {
+      if (!*(args->should_run)) {
         cout << "Destroying thread." <<  endl;
 
         delete args;
