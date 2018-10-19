@@ -34,4 +34,5 @@ void CommandSyncer::pop() {
 void CommandSyncer::free() {
   delete queue_lock;
   delete sync_queue;
+  delete cond;
 }

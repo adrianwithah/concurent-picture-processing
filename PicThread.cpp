@@ -84,4 +84,5 @@ void PicThread::join() {
   pthread_join(running_thread, NULL);
   delete cmd_queue;
   delete queue_mutex;
+  delete picthread_cond;
 }
