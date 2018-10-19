@@ -103,11 +103,11 @@ string Command::get_filename() {
 
 void Command::execute() {
 
-  if (syncer != NULL) {
-    while (!syncer->is_my_turn(this)) {
-      pthread_yield();
-    }
-  }
+  // if (syncer != NULL) {
+  //   while (!syncer->is_my_turn(this)) {
+  //     pthread_yield();
+  //   }
+  // }
 
   switch (instr) {
     case LISTSTORE:
@@ -199,7 +199,11 @@ void Command::execute() {
       break;
   }
 
-  if (syncer != NULL && syncer->is_my_turn(this)) {
+  // if (syncer != NULL && syncer->is_my_turn(this)) {
+  //   syncer->pop();
+  // }
+
+  if (syncer != NULL) {
     syncer->pop();
   }
 

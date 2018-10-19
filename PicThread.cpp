@@ -14,6 +14,11 @@ static void *thread_func(void *arg) {
     queue_mutex->lock();
     if (!cmd_queue->empty()) {
       Command* cmd = cmd_queue->front();
+
+      if (cmd->syncer != nullptr) {
+        cmd->syncer->sleep_till_turn(cmd);
+      }
+
       cmd_queue->pop_front();
 
       queue_mutex->unlock();

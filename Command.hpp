@@ -32,10 +32,10 @@ class Command {
     PicLibrary *picLib;
     map<string, PicThread*> *filename_to_threads;
     Instruction instr;
-    CommandSyncer *syncer = NULL;
 
   public:
     Command(vector<string> *args, PicLibrary *picLib);
+    CommandSyncer *syncer = NULL;
     void parse_arguments();
     string get_filename();
     Instruction get_instruction();

@@ -1,24 +1,44 @@
 #include "CommandSyncer.hpp"
 
-CommandSyncer::CommandSyncer(){}
+CommandSyncer::CommandSyncer() {
+  if (pthread_mutex_init(queue_lock, NULL) != 0) {
+    cout << "error initialising pthread mutex!" << endl;
+  }
 
-bool CommandSyncer::is_my_turn(Command* cmd) {
-  queue_lock->lock();
-  bool result = (sync_queue->front() == cmd);
-  queue_lock->unlock();
-  return result;
+  if (pthread_cond_init(cond, NULL) != 0) {
+    cout << "error initialising cond!" << endl;
+  }
+}
+
+void CommandSyncer::sleep_till_turn(Command* cmd) {
+  // queue_lock->lock();
+  // cout << "trying to lock" << endl;
+  // pthread_mutex_lock(queue_lock);
+  // cout << "lock acquired" << endl;
+  // bool result = (sync_queue->front() == cmd);
+  // pthread_mutex_unlock(queue_lock);
+  // return result;
+
+  pthread_mutex_lock(cmd->syncer->queue_lock);
+  while (sync_queue->front() != cmd) {
+    pthread_cond_wait(cmd->syncer->cond, cmd->syncer->queue_lock);
+  }
+  pthread_mutex_unlock(cmd->syncer->queue_lock);
 }
 
 void CommandSyncer::add(Command* cmd) {
-  queue_lock->lock();
+  // queue_lock->lock();
+  pthread_mutex_lock(queue_lock);
   sync_queue->push_back(cmd);
-  queue_lock->unlock();
+  pthread_mutex_unlock(queue_lock);
 }
 
 void CommandSyncer::pop() {
-  queue_lock->lock();
+  // queue_lock->lock();
+  pthread_mutex_lock(queue_lock);
   sync_queue->pop_front();
-  queue_lock->unlock();
+  pthread_cond_broadcast(cond);
+  pthread_mutex_unlock(queue_lock);
 }
 
 void CommandSyncer::free() {

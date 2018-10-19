@@ -11,11 +11,12 @@ class Command;
 class CommandSyncer {
   private:
     list<Command*> *sync_queue = new list<Command*>;
-    mutex *queue_lock = new mutex;
 
   public:
+    pthread_cond_t *cond = new pthread_cond_t;
+    pthread_mutex_t *queue_lock = new pthread_mutex_t;
     CommandSyncer();
-    bool is_my_turn(Command* cmd);
+    void sleep_till_turn(Command* cmd);
     void add(Command* cmd);
     void pop();
     void free();
