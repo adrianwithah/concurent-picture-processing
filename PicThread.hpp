@@ -12,7 +12,8 @@ class Command;
 struct thread_args {
   list<Command*> *cmd_queue;
   bool *should_run;
-  mutex *queue_mutex;
+  pthread_mutex_t *queue_mutex;
+  pthread_cond_t *thread_cond;
 };
 
 class PicThread {
@@ -20,7 +21,8 @@ class PicThread {
     list<Command*> *cmd_queue = new list<Command*>;
     pthread_t running_thread;
     bool should_run = true;
-    mutex *queue_mutex = new mutex();
+    pthread_mutex_t *queue_mutex = new pthread_mutex_t;
+    pthread_cond_t *picthread_cond = new pthread_cond_t;
 
   public:
     PicThread();
